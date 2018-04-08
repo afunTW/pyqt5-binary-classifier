@@ -4,6 +4,7 @@ import pandas as pd
 
 from glob import glob
 from collections import Counter
+from collections import OrderedDict
 
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QMainWindow
@@ -58,7 +59,11 @@ class BinaryClassifierApp(BinaryClassifierViewer, QMainWindow):
 
     @pyqtSlot()
     def _export(self):
-        pass
+        orderdict = OrderedDict(sorted(self.image_label.items(), key=lambda x: x[0]))
+        outfile = os.path.join(self.outdir, 'results.csv')
+        df = pd.DataFrame(data={'image': list(orderdict.keys()), 'label': list(orderdict.values())}, dtype='uint8')
+        df.to_csv(outfile, index=False)
+        LOGGER.info('Export label result {}'.format(outfile))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Left or event.key() == Qt.Key_A:

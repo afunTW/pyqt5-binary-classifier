@@ -24,7 +24,7 @@ def main(args):
     if not os.path.exists(args.outdir):
         os.makedirs(args.outdir)
     app = QApplication(sys.argv)
-    classifier = BinaryClassifierApp(args.imgdir)
+    classifier = BinaryClassifierApp(args.imgdir, args.outdir)
     app.exec()
 
 if __name__ == '__main__':
