@@ -7,8 +7,8 @@ from collections import Counter
 from collections import OrderedDict
 
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import pyqtSlot
@@ -19,7 +19,7 @@ from .view import BinaryClassifierViewer
 LOGGER = logging.getLogger(__name__)
 
 
-class BinaryClassifierApp(BinaryClassifierViewer, QMainWindow):
+class BinaryClassifierApp(BinaryClassifierViewer):
     def __init__(self, imgdir, outdir):
         super().__init__()
         self.outdir = outdir
@@ -47,14 +47,18 @@ class BinaryClassifierApp(BinaryClassifierViewer, QMainWindow):
 
     @pyqtSlot()
     def _on_click_left(self):
+        if self.image_index == len(self.image_paths) - 1:
+            QMessageBox.information(self, 'Information', 'Reach the end of images')
         self.image_label[self.image_paths[self.image_index]] = 0
-        self.image_index += 1
+        self.image_index = min(self.image_index+1, len(self.image_paths) - 1)
         self._render_image()
 
     @pyqtSlot()
     def _on_click_right(self):
+        if self.image_index == len(self.image_paths) - 1:
+            QMessageBox.information(self, 'Information', 'Reach the end of images')
         self.image_label[self.image_paths[self.image_index]] = 1
-        self.image_index += 1
+        self.image_index = min(self.image_index+1, len(self.image_paths) - 1)
         self._render_image()
 
     @pyqtSlot()
@@ -71,4 +75,4 @@ class BinaryClassifierApp(BinaryClassifierViewer, QMainWindow):
         elif event.key() == Qt.Key_Right or event.key() == Qt.Key_D:
             self.btn_true.click()
         else:
-            LOGGER.info('You Clicked {} but nothing happened...'.format(event.key()))
+            LOGGER.warn('You Clicked {} but nothing happened...'.format(event.key()))
