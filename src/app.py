@@ -2,6 +2,7 @@ import logging
 import os
 import pandas as pd
 
+from math import log10
 from glob import glob
 from collections import Counter
 from collections import OrderedDict
@@ -41,14 +42,29 @@ class BinaryClassifierApp(BinaryClassifierViewer):
     def _render_status(self):
         image_name = os.path.basename(self.image_paths[self.image_index])
         counter = Counter(self.image_label.values())
-        self.label_status.setText('({}/{}) {}'.format(self.image_index + 1, len(self.image_paths), image_name))
+        labeled = self.image_label[self.image_paths[self.image_index]]
+        pad_zero = int(log10(len(self.image_paths))) + 1
+        if labeled is not None:
+            self.label_status.setText('({}/{}) {} => Labeled as {}'.format(
+                str(self.image_index+1).zfill(pad_zero), len(self.image_paths), image_name, labeled
+            ))
+        else:
+            self.label_status.setText('({}/{}) {}'.format(
+                str(self.image_index+1).zfill(pad_zero), len(self.image_paths), image_name
+            ))
         self.btn_false.setText('< False ({})'.format(counter[0]))
         self.btn_true.setText('True ({}) >'.format(counter[1]))
+
+    def _undo_image(self):
+        if self.image_index == 0:
+            QMessageBox.warning(self, 'Warning', 'Reach the top of imags')
+        self.image_index = max(self.image_index - 1, 0)
+        self._render_image()
 
     @pyqtSlot()
     def _on_click_left(self):
         if self.image_index == len(self.image_paths) - 1:
-            QMessageBox.information(self, 'Information', 'Reach the end of images')
+            QMessageBox.warning(self, 'Warning', 'Reach the end of images')
         self.image_label[self.image_paths[self.image_index]] = 0
         self.image_index = min(self.image_index+1, len(self.image_paths) - 1)
         self._render_image()
@@ -56,7 +72,7 @@ class BinaryClassifierApp(BinaryClassifierViewer):
     @pyqtSlot()
     def _on_click_right(self):
         if self.image_index == len(self.image_paths) - 1:
-            QMessageBox.information(self, 'Information', 'Reach the end of images')
+            QMessageBox.warning(self, 'Warning', 'Reach the end of images')
         self.image_label[self.image_paths[self.image_index]] = 1
         self.image_index = min(self.image_index+1, len(self.image_paths) - 1)
         self._render_image()
@@ -74,5 +90,7 @@ class BinaryClassifierApp(BinaryClassifierViewer):
             self.btn_false.click()
         elif event.key() == Qt.Key_Right or event.key() == Qt.Key_D:
             self.btn_true.click()
+        elif event.key() == Qt.Key_U:
+            self._undo_image()
         else:
-            LOGGER.warn('You Clicked {} but nothing happened...'.format(event.key()))
+            LOGGER.debug('You Clicked {} but nothing happened...'.format(event.key()))
