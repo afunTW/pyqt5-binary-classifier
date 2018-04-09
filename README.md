@@ -18,12 +18,12 @@ sudo apt-get install python3-pyqt5
 
 ```
 usage: Binary Classifier building with PyQt5 [-h] --img-dir IMGDIR
-                                             [--out-dir OUTDIR]
+                                             [--out OUTFILE]
 
 optional arguments:
   -h, --help        show this help message and exit
   --img-dir IMGDIR
-  --out-dir OUTDIR
+  --out OUTFILE
 ```
 
 ## Instruction
