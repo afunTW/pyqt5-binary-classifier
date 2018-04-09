@@ -21,15 +21,15 @@ LOGGER = logging.getLogger(__name__)
 
 
 class BinaryClassifierApp(BinaryClassifierViewer):
-    def __init__(self, imgdir, outdir):
+    def __init__(self, imgdir, outfile):
         super().__init__()
-        self.outdir = outdir
+        self.outfile = outfile
         self.image_paths = glob(os.path.abspath(imgdir))
         self.image_index = 0
         self.image_label = {img: None for img in self.image_paths}
         self.btn_false.clicked.connect(self._on_click_left)
         self.btn_true.clicked.connect(self._on_click_right)
-        self.btn_confirm.clicked.connect(self._export)
+        self.btn_confirm.clicked.connect(self.export)
         self._render_image()
 
     def _render_image(self):
@@ -78,12 +78,11 @@ class BinaryClassifierApp(BinaryClassifierViewer):
         self._render_image()
 
     @pyqtSlot()
-    def _export(self):
+    def export(self):
         orderdict = OrderedDict(sorted(self.image_label.items(), key=lambda x: x[0]))
-        outfile = os.path.join(self.outdir, 'results.csv')
         df = pd.DataFrame(data={'image': list(orderdict.keys()), 'label': list(orderdict.values())}, dtype='uint8')
-        df.to_csv(outfile, index=False)
-        LOGGER.info('Export label result {}'.format(outfile))
+        df.to_csv(self.outfile, index=False)
+        LOGGER.info('Export label result {}'.format(self.outfile))
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Left or event.key() == Qt.Key_A:

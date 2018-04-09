@@ -16,16 +16,18 @@ LOGGERS = [
 def argparser():
     parser = argparse.ArgumentParser('Binary Classifier building with PyQt5')
     parser.add_argument('--img-dir', dest='imgdir', required=True)
-    parser.add_argument('--out-dir', dest='outdir', default='result')
+    parser.add_argument('--out', dest='outfile', default='results.csv')
     return parser
 
 def main(args):
     LOGGER.info(args)
-    if not os.path.exists(args.outdir):
-        os.makedirs(args.outdir)
     app = QApplication(sys.argv)
-    classifier = BinaryClassifierApp(args.imgdir, args.outdir)
-    app.exec()
+    classifier = BinaryClassifierApp(args.imgdir, args.outfile)
+    try:
+        app.exec()
+    except Exception as e:
+        classifier.export()
+        LOGGER.exception(e)
 
 if __name__ == '__main__':
     logging.basicConfig(
