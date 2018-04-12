@@ -23,6 +23,7 @@ usage: Binary Classifier building with PyQt5 [-h] --img-dir IMGDIR
 optional arguments:
   -h, --help        show this help message and exit
   --img-dir IMGDIR
+  --history HISTORY
   --out OUTFILE
 ```
 
@@ -31,4 +32,6 @@ optional arguments:
 - Press 'A' to label false
 - Press 'D' to label true
 - Press 'U' to undo
+- Press 'PageUp' goto previous unlabeled image
+- Press 'PageDown' goto next unlabeled image
 - Press 'Confirm' button to export label result as csv file
