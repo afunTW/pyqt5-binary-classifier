@@ -48,7 +48,10 @@ class BinaryClassifierApp(BinaryClassifierViewer):
     def _render_image(self):
         assert 0 <= self.image_index < len(self.image_paths)
         image = QPixmap(self.image_paths[self.image_index])
+        resize_width = min(image.width(), self.screen.width()*0.8)
+        resize_height = min(image.height(), self.screen.height()*0.8)
         self.label_head.setPixmap(image)
+        self.label_head.resize(resize_width, resize_height)
         self._render_status()
         self.show()
 
