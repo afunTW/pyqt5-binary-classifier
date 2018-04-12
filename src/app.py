@@ -44,6 +44,7 @@ class BinaryClassifierApp(BinaryClassifierViewer):
             history_label = {img: int(label) for img, label in history_label if not isinstance(label, str)}
             self.history_label = history_label
             self.image_label.update(history_label)
+            self._goto_next_unlabeled_image()
 
     def _render_image(self):
         assert 0 <= self.image_index < len(self.image_paths)
