@@ -49,7 +49,7 @@ class BinaryClassifierViewer(QWidget):
         self.label_status.setFont(self.font_default)
         self.btn_confirm.setFont(self.font_button)
 
-        self.grid_root.addWidget(self.label_head, 0, 0)
+        self.grid_root.addWidget(self.label_head, 0, 0, Qt.AlignCenter)
         self.grid_root.addLayout(self.hbox_body, 1, 0)
         self.grid_root.addLayout(self.hbox_foot, 2, 0)
         self.hbox_body.addWidget(self.btn_false, Qt.AlignCenter)
