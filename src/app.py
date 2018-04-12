@@ -21,16 +21,29 @@ LOGGER = logging.getLogger(__name__)
 
 
 class BinaryClassifierApp(BinaryClassifierViewer):
-    def __init__(self, imgdir, outfile):
+    def __init__(self, imgdir, outfile, history=None):
         super().__init__()
         self.outfile = outfile
+        self.history_file = history
+        self.history_label = {}
         self.image_paths = glob(os.path.abspath(imgdir))
         self.image_index = 0
         self.image_label = {img: None for img in self.image_paths}
         self.btn_false.clicked.connect(self._on_click_left)
         self.btn_true.clicked.connect(self._on_click_right)
         self.btn_confirm.clicked.connect(self.export)
+        self._load_history()
         self._render_image()
+
+    def _load_history(self):
+        if self.history_file and os.path.isfile(self.history_file):
+            LOGGER.info('Load history file - {}'.format(self.history_file))
+            df = pd.read_csv(self.history_file)
+            df = df.fillna('')
+            history_label = df.to_dict('split')['data']
+            history_label = {img: int(label) for img, label in history_label if not isinstance(label, str)}
+            self.history_label = history_label
+            self.image_label.update(history_label)
 
     def _render_image(self):
         assert 0 <= self.image_index < len(self.image_paths)
