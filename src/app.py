@@ -51,6 +51,7 @@ class BinaryClassifierApp(BinaryClassifierViewer):
         image = QPixmap(self.image_paths[self.image_index])
         resize_width = min(image.width(), self.screen.width()*0.8)
         resize_height = min(image.height(), self.screen.height()*0.8)
+        image = image.scaled(resize_width, resize_height, Qt.KeepAspectRatio)
         self.label_head.setPixmap(image)
         self.label_head.resize(resize_width, resize_height)
         self._render_status()
